@@ -1,0 +1,7 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=FazOS Kur (Terminal)
+Exec=xfce4-terminal -e "sudo fazos-setup"
+Icon=system-software-install
+Terminal=false

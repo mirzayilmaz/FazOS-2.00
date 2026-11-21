@@ -1,0 +1,11 @@
+#!/bin/sh
+# FazOS oturum acilisinda otomatik calisir (XDG autostart).
+[ -d "$HOME/Belgelerim" ] || cp -r /etc/skel/Belgelerim "$HOME/" 2>/dev/null
+FLAG="$HOME/.config/fazos/ilk-acilis"
+if [ ! -f "$FLAG" ]; then
+  mkdir -p "$(dirname "$FLAG")"; touch "$FLAG"
+  zenity --info --title="FazOS'a Hos Geldin" --width=360 --text="FazOS 2.0\nMasaustundeki simgelerden uygulamalari acabilirsin.\nDosyalarin 'Belgelerim' klasorunde." &
+fi
+if grep -q 'boot=live' /proc/cmdline; then
+  notify-send "FazOS Canli Oturum" "Kalici kurulum icin 'FazOS Kur' simgesini kullanin. Canli oturumda yapilan degisiklikler kapaninca silinir."
+fi

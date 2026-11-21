@@ -1,0 +1,4 @@
+#!/bin/sh
+mkdir -p /var/lib/fazos
+printf 'FazOS 2.0\nKurulum tarihi: %s\n' "$(date -u +%F)" > /etc/fazos-release
+touch /var/lib/fazos/firstboot-done

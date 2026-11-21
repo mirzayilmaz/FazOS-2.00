@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Görev Yöneticisi
+Exec=xfce4-taskmanager
+Icon=utilities-system-monitor
+Terminal=false
+Categories=FazOS;

@@ -1,0 +1,11 @@
+ANIMATRONIK LISTESI
+===================
+01 FREDDY   - Ana grup lideri, sahne sef ayi.
+02 BONNIE   - Gitarist, tavsan.
+03 CHICA    - Vokal, tavuk (kek tasir).
+04 FOXY     - Pirate Cove'da, hizli kosar.
+05 MANGLE   - Parcalanip tekrar birlestirilen "oyuncak".
+06 BALLOON BOY - Balonlu kucuk figur.
+
+Kural: Gece saat 00:00-06:00 arasi animatronikler
+sabit durmayabilir. Kapilari ve isiklari kontrol et.

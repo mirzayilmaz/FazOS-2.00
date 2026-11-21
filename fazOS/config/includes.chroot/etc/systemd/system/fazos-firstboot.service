@@ -1,0 +1,8 @@
+[Unit]
+Description=FazOS ilk acilis ayarlari
+ConditionPathExists=!/var/lib/fazos/firstboot-done
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/fazos-firstboot
+[Install]
+WantedBy=multi-user.target

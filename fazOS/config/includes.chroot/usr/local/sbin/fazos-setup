@@ -1,0 +1,56 @@
+#!/bin/bash
+# FazOS 2.0 Kurulum Araci - canli oturumdan sabit diske kurar. UYARI: secilen diski SILER.
+set -euo pipefail
+[ "$(id -u)" = 0 ] || exec sudo "$0" "$@"
+for t in lsblk parted mkfs.ext4 mkfs.vfat rsync grub-install chroot blkid mount; do command -v "$t" >/dev/null || { echo "Eksik arac: $t"; exit 1; }; done
+T=/target; SQ=/mnt/fazos-sq
+cleanup(){ for m in "$T/sys/firmware/efi/efivars" "$T/dev/pts" "$T/dev" "$T/proc" "$T/sys" "$T/boot/efi" "$T" "$SQ"; do mountpoint -q "$m" 2>/dev/null && umount -l "$m" || true; done; }
+trap cleanup EXIT
+echo "=== FazOS 2.0 Kurulum ==="
+lsblk -dpno NAME,SIZE,MODEL,TRAN | grep -v '/dev/loop\|/dev/sr' || true
+read -rp "Kurulacak disk (ornek /dev/sda): " D
+[ -b "$D" ] || { echo "Disk bulunamadi."; exit 1; }
+LIVEDEV=$(findmnt -no SOURCE /run/live/medium 2>/dev/null || true)
+case "$LIVEDEV" in "$D"*) echo "Bu disk su an canli ortamin kendisi. Baska disk secin."; exit 1;; esac
+echo "UYARI: $D uzerindeki TUM VERILER SILINECEK."
+read -rp "Onay icin disk adini aynen yazin: " C; [ "$C" = "$D" ] || { echo "Iptal."; exit 1; }
+read -rp "Bilgisayar adi [fazos]: " H; H="${H:-fazos}"
+read -rp "Kullanici adi: " U; [[ "$U" =~ ^[a-z][a-z0-9_-]{0,30}$ ]] || { echo "Gecersiz kullanici adi."; exit 1; }
+read -rsp "Parola: " P1; echo; read -rsp "Parola (tekrar): " P2; echo
+[ -n "$P1" ] && [ "$P1" = "$P2" ] || { echo "Parolalar uyusmuyor."; exit 1; }
+UEFI=0; [ -d /sys/firmware/efi ] && UEFI=1
+pp="$D"; [[ "$D" =~ [0-9]$ ]] && pp="${D}p"
+umount -R "$D"* 2>/dev/null || true
+if [ $UEFI = 1 ]; then
+  parted -s "$D" mklabel gpt mkpart ESP fat32 1MiB 513MiB set 1 esp on mkpart root ext4 513MiB 100%
+  EFI="${pp}1"; ROOT="${pp}2"; sleep 2; mkfs.vfat -F32 "$EFI"
+else
+  parted -s "$D" mklabel msdos mkpart primary ext4 1MiB 100% set 1 boot on
+  ROOT="${pp}1"; sleep 2
+fi
+mkfs.ext4 -F -L FazOS "$ROOT"
+mkdir -p "$T" "$SQ"; mount "$ROOT" "$T"
+if [ -f /run/live/medium/live/filesystem.squashfs ]; then
+  mount -t squashfs -o loop,ro /run/live/medium/live/filesystem.squashfs "$SQ"; SRC="$SQ/"
+  rsync -aAXH --info=progress2 "$SRC" "$T/"
+else
+  rsync -aAXH --info=progress2 --exclude='/dev/*' --exclude='/proc/*' --exclude='/sys/*' --exclude='/tmp/*' --exclude='/run/*' --exclude='/mnt/*' --exclude='/media/*' --exclude='/home/*' / "$T/"
+fi
+mkdir -p "$T"/{dev,proc,sys,run,tmp,mnt,media}
+if [ $UEFI = 1 ]; then mkdir -p "$T/boot/efi"; mount "$EFI" "$T/boot/efi"; fi
+{ echo "UUID=$(blkid -s UUID -o value "$ROOT") / ext4 defaults,noatime 0 1"
+  [ $UEFI = 1 ] && echo "UUID=$(blkid -s UUID -o value "$EFI") /boot/efi vfat umask=0077 0 1"; } > "$T/etc/fstab" || true
+echo "$H" > "$T/etc/hostname"; sed -i "s/fazos/$H/g" "$T/etc/hosts" 2>/dev/null || true
+for m in dev proc sys; do mount --bind "/$m" "$T/$m"; done; mount --bind /dev/pts "$T/dev/pts"
+[ $UEFI = 1 ] && mount --bind /sys/firmware/efi/efivars "$T/sys/firmware/efi/efivars" 2>/dev/null || true
+chroot "$T" useradd -m -s /bin/bash -G sudo,audio,video,plugdev,netdev,cdrom "$U"
+echo "$U:$P1" | chroot "$T" chpasswd
+chroot "$T" cp -rn /etc/skel/. "/home/$U/" 2>/dev/null || true
+chroot "$T" chown -R "$U:$U" "/home/$U"
+chroot "$T" apt-get -y purge live-boot live-boot-initramfs-tools live-config live-config-systemd 2>/dev/null || true
+sed -i 's/^GRUB_DISTRIBUTOR=.*/GRUB_DISTRIBUTOR="FazOS"/' "$T/etc/default/grub" 2>/dev/null || true
+chroot "$T" update-initramfs -u -k all
+if [ $UEFI = 1 ]; then chroot "$T" grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=FazOS --removable
+else chroot "$T" grub-install --target=i386-pc "$D"; fi
+chroot "$T" update-grub
+echo "Kurulum tamamlandi. Canli ortami (ISO/USB) cikarip yeniden baslatin."

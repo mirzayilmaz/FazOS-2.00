@@ -1,0 +1,2 @@
+#!/bin/sh
+zenity --info --title="FazOS Hakkında" --width=380 --text="FazOS 2.0\nTemel: Debian 12 (bookworm) + Linux çekirdeği\nMasaüstü: Xfce (FazOS yapılandırması)\nFEAS Software © 1980-2027\n\nHayran yapımı bir projedir."

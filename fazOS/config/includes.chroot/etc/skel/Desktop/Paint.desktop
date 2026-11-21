@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Paint
+Exec=drawing
+Icon=applications-graphics
+Terminal=false
+Categories=FazOS;

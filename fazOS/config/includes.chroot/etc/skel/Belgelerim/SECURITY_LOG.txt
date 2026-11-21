@@ -1,0 +1,8 @@
+GUVENLIK GUNLUGU
+================
+[00:00] Sistem baslatildi.
+[01:12] Kamera 04: Hareket algilandi.
+[02:47] Kamera 07: Odada kimse yok.
+[03:30] Muzik kutusu cevrilmedi, uyari.
+[05:58] Sabah vardiyasina hazir ol.
+[06:00] Vardiya bitti. Iyi isler.

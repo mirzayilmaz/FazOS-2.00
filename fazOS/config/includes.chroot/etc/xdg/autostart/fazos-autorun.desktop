@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=FazOS Autorun
+Exec=/usr/local/bin/fazos-autorun
+OnlyShowIn=XFCE;
+X-GNOME-Autostart-enabled=true

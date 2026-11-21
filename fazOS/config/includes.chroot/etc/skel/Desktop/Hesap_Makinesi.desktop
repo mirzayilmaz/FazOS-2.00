@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Hesap Makinesi
+Exec=galculator
+Icon=accessories-calculator
+Terminal=false
+Categories=FazOS;

@@ -1,0 +1,18 @@
+#!/bin/sh
+set -e
+cat > /usr/lib/os-release <<'EOT'
+PRETTY_NAME="FazOS 2.0"
+NAME="FazOS"
+VERSION_ID="2.0"
+VERSION="2.0 (Gece Vardiyasi)"
+VERSION_CODENAME=bookworm
+ID=fazos
+ID_LIKE=debian
+EOT
+printf 'FazOS 2.0 \\n \\l\n\n' > /etc/issue
+echo "FazOS 2.0" > /etc/issue.net
+chmod +x /etc/skel/Desktop/*.desktop /usr/local/bin/fazos-hakkinda /usr/local/bin/fazos-autorun /usr/local/sbin/fazos-setup /usr/local/sbin/fazos-firstboot
+echo "tr_TR.UTF-8 UTF-8" >> /etc/locale.gen; locale-gen || true
+flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo || true
+systemctl enable NetworkManager lightdm || true
+systemctl enable fazos-firstboot.service || true

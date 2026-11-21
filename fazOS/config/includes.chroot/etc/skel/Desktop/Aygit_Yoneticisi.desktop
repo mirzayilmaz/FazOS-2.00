@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Aygıt Yöneticisi
+Exec=lshw-gtk
+Icon=hardinfo
+Terminal=false
+Categories=FazOS;

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Mayın Tarlası
+Exec=gnome-mines
+Icon=applications-games
+Terminal=false
+Categories=FazOS;

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Yazılım Yükle
+Exec=synaptic-pkexec
+Icon=system-software-install
+Terminal=false
+Categories=FazOS;

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Yazı Defteri
+Exec=mousepad
+Icon=accessories-text-editor
+Terminal=false
+Categories=FazOS;

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Müzik Kutusu
+Exec=audacious
+Icon=multimedia-audio-player
+Terminal=false
+Categories=FazOS;

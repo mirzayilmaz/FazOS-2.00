@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="tr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FazOS 1.0</title>
+<style>
+:root{color-scheme:dark;--bg:#000;--fg:#fff;--dim:#999;--line:#fff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:"Courier New",monospace;overflow:hidden}
+#boot{position:fixed;inset:0;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99;cursor:pointer}
+#boot .c{position:absolute;font-size:14px}
+.logo{width:120px}
+.name{font:700 44px/1.1 system-ui,sans-serif;margin:6px 0 28px}
+.bar{width:220px;height:22px;border:3px solid #888;padding:2px;display:flex;gap:3px;background:#fff}
+.bar i{flex:1;background:#000;opacity:0}
+#desk{position:fixed;inset:0;display:none;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
+#area{flex:1;position:relative;padding:14px;display:flex;flex-direction:column;flex-wrap:wrap;align-content:flex-start;gap:14px;overflow:hidden}
+.ic{width:84px;text-align:center;font-size:12px;cursor:pointer;user-select:none}
+.ic b{display:block;width:48px;height:48px;margin:0 auto 4px;border:2px solid #fff;font:700 22px/44px monospace}
+.ic:active b{background:#fff;color:#000}
+.win{position:absolute;width:min(96vw,880px);background:#000;border:2px solid #fff;display:flex;flex-direction:column;box-shadow:6px 6px 0 #333}
+.tb{background:#fff;color:#000;padding:4px 8px;display:flex;justify-content:space-between;cursor:move;touch-action:none;font-weight:700;font-size:14px}
+.tb span.x{cursor:pointer;padding:0 6px}
+.bd{padding:10px;max-height:min(70vh,580px);overflow:auto;font-size:14px;line-height:1.5}
+.bd pre{white-space:pre-wrap;margin:0;font:inherit}
+.fl{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.fl button,.btn{background:#000;color:#fff;border:1px solid #fff;padding:6px 10px;font:inherit;cursor:pointer}
+.fl button:hover,.btn:hover,.fl button.on{background:#fff;color:#000}
+#task{height:42px;border-top:2px solid #fff;display:flex;align-items:center;gap:8px;padding:0 8px;padding-bottom:env(safe-area-inset-bottom,0px);background:#000}
+#task .st{margin-left:auto;font-size:14px}
+.tt{border:1px solid #fff;padding:3px 8px;font-size:12px;cursor:pointer}
+#term-out{height:min(48vh,400px);overflow:auto;white-space:pre-wrap}
+#term-in{width:100%;background:#000;color:#fff;border:0;border-top:1px solid #444;padding:8px 0;font:inherit;outline:0}
+.cam{aspect-ratio:4/3;background:#111;position:relative;overflow:hidden;border:1px solid #555}
+.cam canvas{width:100%;height:100%;display:block}
+.cam em{position:absolute;left:8px;top:6px;font-style:normal;font-size:13px}
+.rec{color:#f33}.win.max{left:0!important;top:0!important;width:100%!important;height:100%}.win.max .bd{max-height:none;flex:1}.win.max #bv{height:72vh!important}.win.max #term-out{height:70vh}.tb .m,.tb .x{cursor:pointer;padding:0 8px}#sm{display:none;position:absolute;left:0;bottom:calc(42px + env(safe-area-inset-bottom,0px));width:min(92vw,340px);max-height:70vh;background:#000;border:2px solid #fff;z-index:99999;flex-direction:column;box-shadow:6px 6px 0 #333}.smh{background:#fff;color:#000;padding:8px 10px;font-weight:700;font-size:16px}.smh small{float:right;font-weight:400}#sq{margin:8px;background:#000;color:#fff;border:1px solid #fff;padding:8px;font:inherit;outline:0}#sl{overflow:auto;flex:1;padding:0 8px}.smi{padding:10px;border-bottom:1px solid #333;cursor:pointer}.smi:hover{background:#fff;color:#000}.smi small{color:#888;float:right}.smf{display:flex;gap:8px;padding:8px;border-top:1px solid #fff}.smf .btn{flex:1}
+html,body{font-family:Tahoma,Verdana,sans-serif}#area{background:#3a6ea5}.ic{color:#fff;text-shadow:1px 1px 0 #000}.ic b{background:#d4d0c8;color:#000;border:2px solid;border-color:#fff #404040 #404040 #fff;font-family:monospace}.ic:active b{background:#a0a0a0}.win{background:#d4d0c8;color:#000;border:2px solid;border-color:#fff #404040 #404040 #fff;box-shadow:2px 2px 0 #000}.tb{background:linear-gradient(90deg,#0a246a,#a6caf0);color:#fff}.bd pre{background:#fff;padding:8px;border:2px inset #fff}.fl button,.btn,.tt{background:#d4d0c8;color:#000;border:2px solid;border-color:#fff #404040 #404040 #fff;font-family:inherit}.fl button:hover,.btn:hover,.fl button.on{background:#0a246a;color:#fff}.fl button:active,.btn:active{border-color:#404040 #fff #fff #404040}#task{background:#d4d0c8;color:#000;border-top:2px solid #fff}#start{font-weight:700;background:#d4d0c8}#sm{background:#d4d0c8;color:#000;border:2px solid;border-color:#fff #404040 #404040 #fff;border-left:30px solid #0a246a}.smh{background:#0a246a;color:#fff}#sq{background:#fff;color:#000;border:2px inset #fff}.smi{border-bottom:1px solid #aaa}.smi:hover{background:#0a246a;color:#fff}.smf{border-top:1px solid #808080}#term-out{background:#000;color:#ddd;padding:6px}#term-in{background:#000;color:#fff;padding:8px 6px}#bu{background:#fff!important;color:#000!important;border:2px inset #fff!important}#bv{background:#fff}.bd b,.win input{font-family:inherit}#cm{position:fixed;display:none;background:#d4d0c8;color:#000;border:2px solid;border-color:#fff #404040 #404040 #fff;z-index:100000;min-width:190px;box-shadow:2px 2px 0 #000}#cm div{padding:8px 14px;cursor:pointer}#cm div:hover{background:#0a246a;color:#fff}#area{transition:opacity .15s}.tb{background:linear-gradient(90deg,var(--t1,#0a246a),var(--t2,#a6caf0))!important}.smh{background:var(--t1,#0a246a)!important}.ic b{font-size:26px}.rw{display:flex;gap:10px;padding:7px 8px;cursor:pointer;border-bottom:1px solid #eee;background:#fff;align-items:center}.rw:hover{background:#0a246a;color:#fff}.rw span:nth-child(2){flex:1;overflow:hidden;text-overflow:ellipsis}.rw small{color:#777;font-size:12px;text-align:right}.rw:hover small{color:#ddd}</style></head><body>
+<div id="boot">
+  <div class="c" style="left:20px;top:20px">1980-2027</div>
+  <svg class="logo" viewBox="0 0 120 160"><path d="M4 14Q30 22 60 6T116 2V138Q86 128 60 142T4 150Z" fill="#fff"/><g fill="none" stroke="#000" stroke-width="4"><rect x="46" y="24" width="28" height="22" fill="#000"/><circle cx="60" cy="86" r="30"/><circle cx="26" cy="68" r="11"/><circle cx="94" cy="68" r="11"/></g><circle cx="49" cy="80" r="4"/><circle cx="71" cy="80" r="4"/><ellipse cx="60" cy="94" rx="6" ry="4"/><path d="M42 106Q60 118 78 106" stroke="#000" stroke-width="3" fill="none"/><path d="M46 124h28v10H46z"/></svg>
+  <div class="name">FazOS</div>
+  <div class="bar"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="c" style="left:20px;bottom:20px">FEAS Software©</div>
+  <div class="c" style="right:20px;bottom:20px">Version 1.0</div>
+</div>
+<div id="desk"><div id="area"></div>
+  <div id="cm"></div><div id="sm"></div><div id="task"><div class="tt" id="start">▣ FazOS</div><div id="tasks" style="display:flex;gap:6px"></div><div class="st" id="clk"></div></div>
+</div>
+<script>
+const FILES={
+"README.txt":`FazOS 1.0 - FEAS Software
+=========================
+Hos geldin, gece gorevlisi.
+Bu sistem bir hayran yapimi (fan-made) simulasyondur.
+
+Masaustundeki simgelere cift tikla:
+ - NOTLAR  : .txt dosyalarini oku
+ - TERMINAL: 'help' yaz
+ - KAMERA  : Guvenlik kameralari
+ - SAAT    : Vardiya saati
+
+Not: Dosya icerikleri hikaye/teori ozetidir, resmi metin degildir.`,
+"BITE_OF_87.txt":`ISIRIK OLAYI - 1987 (Bite of '87)
+=================================
+Durum   : Kapatildi / Halk bilgisi
+Mekan   : Freddy Fazbear's Pizza (ikinci sube donemi)
+
+OZET
+Telefon Adami'nin (Phone Guy) anlattigi olaylardan biri.
+Bir animatronik, bir kisinin on lobunu (frontal lobe)
+isirarak kopardi. Kurban hayatta kaldi.
+
+RESMI SOYLENEN
+Animatronikler gece moduna gecince "serbest dolasim"
+yaptigi icin bu tur olaylarin olabilecegi soylenir.
+Sirket, olayin "normal bir kaza" olmadigini kabul etmez
+ama sorumlulugu da ustlenmez.
+
+TEORI (hayran yorumu)
+- En yaygin teori: olayin sorumlusu Mangle'dir.
+- Baska teori: olay "'83" isirigiyla karistirilir.
+- Kurbanin kimligi kesin degildir; tartismalidir.
+
+ETKI
+- Pizzaci kapandi, imaj zedelendi.
+- Animatroniklere ses/yuz tanima ozellikleri sonradan
+  kisitlandi, "yetiskin yuzu" algisi kaldirildi iddiasi.
+
+DOSYA NOTU: Detaylar hayran toplulugunun yorumudur.`,
+"BITE_OF_83.txt":`ISIRIK OLAYI - 1983 (Bite of '83)
+=================================
+Genelde "Aglayan Cocuk" (Crying Child) hikayesiyle
+anilir. Dogum gunu partisinde yasanan bir olay oldugu
+ve cocugun agir yaralandigi teorisi yaygindir.
+'83 ve '87 sik sik birbirine karistirilir.
+Durum: Teori / Tartismali`,
+"ANIMATRONICS.txt":`ANIMATRONIK LISTESI
+===================
+01 FREDDY   - Ana grup lideri, sahne sef ayi.
+02 BONNIE   - Gitarist, tavsan.
+03 CHICA    - Vokal, tavuk (kek tasir).
+04 FOXY     - Pirate Cove'da, hizli kosar.
+05 MANGLE   - Parcalanip tekrar birlestirilen "oyuncak".
+06 BALLOON BOY - Balonlu kucuk figur.
+
+Kural: Gece saat 00:00-06:00 arasi animatronikler
+sabit durmayabilir. Kapilari ve isiklari kontrol et.`,
+"SECURITY_LOG.txt":`GUVENLIK GUNLUGU
+================
+[00:00] Sistem baslatildi.
+[01:12] Kamera 04: Hareket algilandi.
+[02:47] Kamera 07: Odada kimse yok.
+[03:30] Muzik kutusu cevrilmedi, uyari.
+[05:58] Sabah vardiyasina hazir ol.
+[06:00] Vardiya bitti. Iyi isler.`,
+"FAZBEAR_HISTORY.txt":`FAZBEAR ENTERTAINMENT - KISA TARIH
+==================================
+1980-ler : Fredbear's Family Diner donemi.
+1987     : Freddy Fazbear's Pizza acildi/yeniden acildi.
+1987     : Isirik olayi, sube kamuoyunda yara aldi.
+sonrasi  : Springlock sistemler ve bakim sorunlari.
+2027     : FazOS bu tarihe kadar "destek" yazar.
+
+Slogan: "Where fantasy and fun come to life!"`
+};
+const $=s=>document.querySelector(s);
+const area=$('#area'),tasks=$('#tasks');let z=10,wins={};
+// boot
+const bars=[...document.querySelectorAll('.bar i')];let bi=0;
+const bt=setInterval(()=>{if(bi<bars.length)bars[bi++].style.opacity=1;else{clearInterval(bt);startDesk()}},320);
+$('#boot').onclick=startDesk;
+function startDesk(){clearInterval(bt);$('#boot').style.display='none';$('#desk').style.display='flex';if(!area.children.length){mk();open('notes')}}
+function mk(){const a=[['browser','WWW','INTERNET'],['calc','=','HESAP'],['pc','PC','BU BİLGİSAYAR'],['dev','HW','AYGIT YÖN.'],['tm','%','GÖREV YÖN.'],['run','>','ÇALIŞTIR'],['writer','W','YAZI DEFTERİ'],['paint','P','PAINT'],['mines','M','MAYIN TARLASI'],['music','♪','MÜZİK KUTUSU'],['cal','C','TAKVİM'],['ctrl','D','DENETİM MASASI'],['notes','TXT','NOTLAR'],['term','>_','TERMINAL'],['cam','CAM','KAMERA'],['clock','00','SAAT'],['about','i','HAKKINDA']];
+a.forEach(([id,i,n])=>{const d=document.createElement('div');d.className='ic';d.innerHTML=`<b>${IC[id]||i}</b>${n}`;d.onclick=()=>open(id);area.appendChild(d)})}
+const f=(s,t)=>({f:1,s,t:t||''});
+const FS={'C:':{FazOS:{system32:{drivers:{etc:{hosts:f(1,'# FazOS hosts dosyası\n127.0.0.1 localhost\n::1 localhost\n'),networks:f(1,'loopback 127\n')},'fazdisk.sys':f(48),'fazgpu.sys':f(620),'fazkbd.sys':f(36)},config:{SYSTEM:f(14336),SOFTWARE:f(31744),SAM:f(256),SECURITY:f(256)},'cmd.exe':f(289),'notepad.exe':f(193),'calc.exe':f(918),'mspaint.exe':f(6144),'taskmgr.exe':f(1032),'control.exe':f(142),'devmgmt.msc':f(80),'winmine.exe':f(120),'write.exe':f(9),'ntoskrnl.exe':f(7424),'kernel32.dll':f(1180),'user32.dll':f(1620),'faznet.dll':f(512),'hal.dll':f(80)},Fonts:{'cour.ttf':f(380),'tahoma.ttf':f(680)},Temp:{},'explorer.exe':f(4580),'win.ini':f(1,'[fonts]\n[extensions]\n[FazOS]\nversion=1.0\nvendor=FEAS Software\n'),'system.ini':f(1,'[boot]\nshell=explorer.exe\n')},'Program Files':{'FEAS Software':{FazOS:{'fazos.exe':f(2048),'readme.txt':f(1,'FazOS 1.0 - FEAS Software (c) 1980-2027')}},FazNet:{'faznet.exe':f(1536)},'Common Files':{}},'Program Files (x86)':{},Users:{gece_gorevlisi:{Belgelerim:{},'Masaüstü':{},'İndirilenler':{},Resimlerim:{},'Müziklerim':{}},Public:{}},'boot.ini':f(1,'[boot loader]\ntimeout=5\ndefault=multi(0)disk(0)rdisk(0)partition(1)\n'),'pagefile.sys':f(524288)},'D:':{'FAZOS.HTM':f(80),'README.TXT':f(1,'FazOS kurulum diski')}};
+const IC={notes:'📝',browser:'🌐',calc:'🧮',pc:'🖥️',dev:'⚙️',tm:'📊',run:'▶️',term:'⌨️',cam:'📹',clock:'🕒',about:'ℹ️',paint:'🎨',mines:'💣',writer:'📄',ctrl:'🛠️',cal:'📅',music:'🎵'};let h0;const APPS={
+view:()=>{const[n,t]=window.vw;const w=win('view',n+' - Görüntüleyici');const p=document.createElement('pre');p.textContent=t;w.querySelector('.bd').appendChild(p)},
+pc:()=>{const w=win('pc','Bu Bilgisayar');w.style.width='min(96vw,900px)';const b=w.querySelector('.bd');let P=[];const BS=String.fromCharCode(92),DOC='C:/Users/gece_gorevlisi/Belgelerim';
+const get=p=>{if(p.join('/')===DOC)return Object.fromEntries(Object.keys(FILES).map(k=>[k,{f:1,d:1,t:FILES[k],s:Math.ceil(FILES[k].length/1024)||1}]));let n=FS;for(const k of p){n=n[k];if(!n)return null}return n};
+const ico=(n,k)=>!n.f?'📁':({exe:'⚙️',dll:'🧩',sys:'🛡️',ini:'🗒️',msc:'🛠️',htm:'🌐',ttf:'🔤'}[k.split('.').pop().toLowerCase()]||'📄');
+const AM={'notepad.exe':'notes','cmd.exe':'term','calc.exe':'calc','mspaint.exe':'paint','taskmgr.exe':'tm','control.exe':'ctrl','devmgmt.msc':'dev','winmine.exe':'mines','write.exe':'writer','explorer.exe':'pc','faznet.exe':'browser','fazos.exe':'about','FAZOS.HTM':'about'};
+const opn=(k,n)=>{if(n.d){if(wins.notes)wins.notes.querySelector('.x').click();window.pf=k;open('notes')}else if(AM[k])open(AM[k]);else{if(wins.view)wins.view.querySelector('.x').click();window.vw=[k,n.t||'Bu dosya ikili (binary) bir dosyadır ('+n.s+' KB).\nFazOS ile açılamaz.'];open('view')}};
+const draw=()=>{const addr=P.length?P[0]+BS+P.slice(1).join(BS):'Bu Bilgisayar';w.querySelector('.tb span').textContent=addr;
+b.innerHTML='<div class="fl"><button id="up">⬆ Yukarı</button><div style="flex:1;min-width:140px;background:#fff;border:2px inset #fff;padding:6px;overflow:hidden">'+addr+'</div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><div id="sb" style="width:150px;display:flex;flex-direction:column;gap:4px"></div><div id="ls" style="flex:1;min-width:220px;min-height:250px;background:#fff;border:2px inset #fff;max-height:min(52vh,420px);overflow:auto"></div></div><div id="stt" style="margin-top:6px;font-size:12px"></div>';
+b.querySelector('#up').onclick=()=>{P=P.slice(0,-1);draw()};const L=b.querySelector('#ls');
+[['🖥️ Bu Bilgisayar',[]],['💾 C:',['C:']],['📁 FazOS',['C:','FazOS']],['📁 system32',['C:','FazOS','system32']],['📁 Program Files',['C:','Program Files']],['📂 Belgelerim',DOC.split('/')],['💿 D:',['D:']]].forEach(([t,p])=>{const s=document.createElement('button');s.textContent=t;s.style.textAlign='left';s.onclick=()=>{P=p;draw()};b.querySelector('#sb').appendChild(s)});
+const row=(i,n,t,fn)=>{const d=document.createElement('div');d.className='rw';d.innerHTML='<span></span><span></span><small></small>';const c=d.children;c[0].textContent=i;c[1].textContent=n;c[2].textContent=t;d.onclick=fn;L.appendChild(d)};let cnt=0;
+if(!P.length){cnt=2;row('💾','Yerel Disk (C:)','97,3 GB boş / 120 GB',()=>{P=['C:'];draw()});row('💿','FAZOS (D:)','CD sürücüsü',()=>{P=['D:'];draw()})}
+else{const n=get(P);if(!n||n.f){P=[];return draw()}const ks=Object.keys(n).sort((a,c)=>(!!n[a].f-!!n[c].f)||a.localeCompare(c));cnt=ks.length;ks.forEach(k=>row(ico(n[k],k),k,n[k].f?n[k].s+' KB':'Dosya klasörü',()=>{if(n[k].f)opn(k,n[k]);else{P=P.concat(k);draw()}}));if(!cnt)L.innerHTML='<div style="padding:10px;color:#888">Bu klasör boş.</div>'}
+b.querySelector('#stt').textContent=cnt+' öğe';};draw()},
+paint:()=>{const w=win('paint','Paint');const b=w.querySelector('.bd');b.innerHTML='<div class="fl" id="pt"></div><canvas width="800" height="420" style="width:100%;background:#fff;border:2px inset #fff;touch-action:none;cursor:crosshair"></canvas>';const c=b.querySelector('canvas'),x=c.getContext('2d');const wh=()=>{x.fillStyle='#fff';x.fillRect(0,0,800,420)};wh();let col='#000',sz=4,dr=false;const pt=b.querySelector('#pt');
+['#000','#f00','#0a0','#00f','#fc0','#f0f','#0cc','#fff'].forEach(k=>{const s=document.createElement('button');s.style.cssText='width:30px;height:30px;background:'+k;s.onclick=()=>col=k;pt.appendChild(s)});
+[['İnce',2],['Orta',6],['Kalın',18]].forEach(([t,n])=>{const s=document.createElement('button');s.textContent=t;s.onclick=()=>sz=n;pt.appendChild(s)});const cl=document.createElement('button');cl.textContent='Temizle';cl.onclick=wh;pt.appendChild(cl);
+const p=e=>{const r=c.getBoundingClientRect();return[(e.clientX-r.left)*800/r.width,(e.clientY-r.top)*420/r.height]};
+c.onpointerdown=e=>{dr=true;c.setPointerCapture(e.pointerId);const[a,d]=p(e);x.beginPath();x.moveTo(a,d);x.strokeStyle=col;x.lineWidth=sz;x.lineCap='round';x.lineTo(a+.1,d);x.stroke()};c.onpointermove=e=>{if(!dr)return;const[a,d]=p(e);x.strokeStyle=col;x.lineWidth=sz;x.lineTo(a,d);x.stroke()};c.onpointerup=()=>dr=false},
+mines:()=>{const w=win('mines','Mayın Tarlası');w.style.width='min(96vw,360px)';const b=w.querySelector('.bd');const N=9,M=10;let g,over,flag=false;
+const nb=(i,f)=>{const r=i/N|0,q=i%N;for(let a=-1;a<2;a++)for(let d=-1;d<2;d++){const rr=r+a,qq=q+d;if(rr>=0&&rr<N&&qq>=0&&qq<N)f(rr*N+qq)}};
+const init=()=>{g=Array.from({length:N*N},()=>({m:0,o:0,f:0,n:0}));let k=0;while(k<M){const i=Math.random()*N*N|0;if(!g[i].m){g[i].m=1;k++}}g.forEach((c,i)=>nb(i,j=>{if(g[j].m)c.n++}));over=0;draw()};
+const op=i=>{const c=g[i];if(c.o||c.f)return;c.o=1;if(c.m){over=1;return}if(!c.n)nb(i,op)};
+const draw=()=>{const won=!over&&g.every(c=>c.m||c.o);b.innerHTML='<div class="fl"><button id="mr">🙂 Yeni</button><button id="mf">'+(flag?'🚩 Bayrak: AÇIK':'Bayrak: kapalı')+'</button><b style="align-self:center">'+(over?'💥 Kaybettin':won?'🏆 Kazandın!':'Mayın: '+M)+'</b></div><div style="display:grid;grid-template-columns:repeat(9,1fr);gap:2px" id="mg"></div>';b.querySelector('#mr').onclick=init;b.querySelector('#mf').onclick=()=>{flag=!flag;draw()};const G=b.querySelector('#mg');
+g.forEach((c,i)=>{const s=document.createElement('button');s.style.cssText='height:34px;padding:0;font-weight:700';s.textContent=c.o?(c.m?'💣':c.n||''):c.f?'🚩':(over&&c.m?'💣':'');if(c.o)s.style.borderColor='#808080';s.onclick=()=>{if(over||won)return;if(flag&&!c.o)c.f=!c.f;else op(i);draw()};s.oncontextmenu=e=>{e.preventDefault();if(!c.o&&!over){c.f=!c.f;draw()}};G.appendChild(s)})};init()},
+writer:()=>{const w=win('writer','Yazı Defteri');const b=w.querySelector('.bd');b.innerHTML='<div class="fl"><input id="wn" value="NOTUM.txt" style="padding:6px;border:2px inset #fff;background:#fff;color:#000"><button id="ws">Kaydet</button><button id="wo">Aç</button><b id="wm" style="align-self:center"></b></div><textarea style="width:100%;height:min(46vh,340px);background:#fff;color:#000;border:2px inset #fff;font:14px monospace;padding:6px"></textarea>';const t=b.querySelector('textarea'),n=b.querySelector('#wn'),m=b.querySelector('#wm');
+b.querySelector('#ws').onclick=()=>{let f=n.value.trim()||'NOTUM.txt';if(!/[.]txt$/i.test(f))f+='.txt';FILES[f]=t.value;n.value=f;m.textContent='Kaydedildi: '+f+' (Notlar ve Bu Bilgisayar\'da görünür)'};
+b.querySelector('#wo').onclick=()=>{const f=Object.keys(FILES).find(k=>k.toLowerCase()===n.value.trim().toLowerCase());if(f){t.value=FILES[f];m.textContent='Açıldı'}else m.textContent='Dosya yok'}},
+ctrl:()=>{const w=win('ctrl','Denetim Masası');const b=w.querySelector('.bd');b.innerHTML='<b>Masaüstü Arka Planı</b><div class="fl" id="c1" style="margin:8px 0"></div><b>Pencere Rengi</b><div class="fl" id="c2" style="margin:8px 0"></div><b>Sistem</b><div style="background:#fff;border:2px inset #fff;padding:8px;margin-top:6px">FazOS 1.0 (ReactOS tarzı)<br>FEAS Software © 1980-2027<br>Ekran: '+screen.width+'x'+screen.height+'<br>Çekirdek: '+(navigator.hardwareConcurrency||'?')+'</div>';
+WP.forEach((k,i)=>{const s=document.createElement('button');s.style.cssText='width:44px;height:30px;background:'+k;s.onclick=()=>{area.style.background=k};b.querySelector('#c1').appendChild(s)});
+[['Klasik Mavi','#0a246a','#a6caf0'],['Orman','#0a5a2a','#8fd19e'],['Bordo','#6a0a1a','#e0a0a8'],['Siyah','#000','#777']].forEach(([n,a,c])=>{const s=document.createElement('button');s.textContent=n;s.onclick=()=>{document.documentElement.style.setProperty('--t1',a);document.documentElement.style.setProperty('--t2',c)};b.querySelector('#c2').appendChild(s)})},
+cal:()=>{const w=win('cal','Takvim');w.style.width='min(96vw,380px)';const b=w.querySelector('.bd');let d=new Date();d.setDate(1);const draw=()=>{const y=d.getFullYear(),m=d.getMonth(),t=new Date();b.innerHTML='<div class="fl"><button id="cp">◀</button><b style="align-self:center;flex:1;text-align:center">'+d.toLocaleDateString('tr-TR',{month:'long',year:'numeric'})+'</b><button id="cx">▶</button></div><div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center" id="cg"></div>';const g=b.querySelector('#cg');let h='';['Pt','Sa','Ça','Pe','Cu','Ct','Pz'].forEach(x=>h+='<b>'+x+'</b>');const off=(d.getDay()+6)%7,dim=new Date(y,m+1,0).getDate();for(let i=0;i<off;i++)h+='<span></span>';
+for(let i=1;i<=dim;i++){const td=i===t.getDate()&&m===t.getMonth()&&y===t.getFullYear();h+='<span style="padding:8px 0;'+(td?'background:#0a246a;color:#fff':'background:#fff')+'">'+i+'</span>'}g.innerHTML=h;b.querySelector('#cp').onclick=()=>{d.setMonth(m-1);draw()};b.querySelector('#cx').onclick=()=>{d.setMonth(m+1);draw()}};draw()},
+music:()=>{const w=win('music','Müzik Kutusu');w.style.width='min(96vw,360px)';const b=w.querySelector('.bd');b.innerHTML='<div style="text-align:center;font-size:40px">🎵</div><div id="mn" style="text-align:center;margin:8px">Durdu</div><div class="fl" style="justify-content:center"><button id="mp">▶ Çal</button><button id="ms">■ Durdur</button></div>';let ctx,T=0,i=0;const N=[392,523,659,784,659,523,392,330,392,523,659,523,440,523,659,880];const mn=b.querySelector('#mn');
+const stop=()=>{clearInterval(T);T=0;mn.textContent='Durdu'};b.querySelector('#mp').onclick=()=>{if(T)return;ctx=ctx||new(window.AudioContext||window.webkitAudioContext)();mn.textContent='Müzik kutusu çalıyor...';T=setInterval(()=>{if(!document.body.contains(w))return stop();const o=ctx.createOscillator(),g=ctx.createGain();o.type='triangle';o.frequency.value=N[i++%N.length];g.gain.setValueAtTime(.2,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.5);o.connect(g);g.connect(ctx.destination);o.start();o.stop(ctx.currentTime+.5)},380)};b.querySelector('#ms').onclick=stop},
+pcOld:()=>{const w=win('pc','Bu Bilgisayar');const b=w.querySelector('.bd');const show=p=>{b.innerHTML='<div class="fl"><button id="p0">Bu Bilgisayar</button><b style="align-self:center">'+p+'</b></div><div class="fl" id="pl"></div>';b.querySelector('#p0').onclick=()=>show('');const l=b.querySelector('#pl');const add=(t,f)=>{const x=document.createElement('button');x.textContent=t;x.style.cssText='min-width:150px;padding:14px';x.onclick=f;l.appendChild(x)};
+if(!p){add('💾 Yerel Disk (C:)',()=>show('C:'));add('💿 FAZOS (D:)',()=>show('D:'));add('⚙ Aygıt Yöneticisi',()=>open('dev'));add('📊 Görev Yöneticisi',()=>open('tm'));add('▶ Çalıştır',()=>open('run'));add('🌐 İnternet',()=>open('browser'))}
+else if(p==='C:')Object.keys(FILES).forEach(f=>add('📄 '+f+' ('+FILES[f].length+' B)',()=>{if(wins.notes)wins.notes.querySelector('.x').click();window.pf=f;open('notes')}));
+else add('📄 FAZOS.HTM',()=>open('about'))};show('')},
+dev:()=>{const w=win('dev','Aygıt Yöneticisi');const b=w.querySelector('.bd');const D={'Bilgisayar':['FazOS Sanal PC'],'İşlemci':['FEAS Fazbear CPU - '+(navigator.hardwareConcurrency||4)+' çekirdek'],'Ekran':['Virtual FazGPU 1920x1080'],'Ses':['Müzik Kutusu Ses Aygıtı'],'Ağ':['FazNet Adaptörü'],'Giriş':['Standart Klavye','Dokunmatik / Fare'],'Kameralar':['Kamera 01','Kamera 02','Kamera 03','Kamera 04'],'Animatronik Denetleyici':['Freddy','Bonnie','Chica','Foxy','Mangle'],'Disk':['FazDisk C:','FazCD D:']};const st={};
+const draw=(sel,msg)=>{b.innerHTML='<div class="fl"><button id="sc">Donanım Tara</button><b style="align-self:center">'+(msg||'')+'</b></div><div style="display:flex;gap:8px;flex-wrap:wrap"><div id="tr" style="flex:1;min-width:230px;background:#fff;border:2px inset #fff;padding:6px;max-height:380px;overflow:auto"></div><div id="in" style="flex:1;min-width:200px;padding:6px"></div></div>';const t=b.querySelector('#tr');Object.keys(D).forEach(k=>{const h=document.createElement('div');h.style.fontWeight='700';h.textContent='▾ '+k;t.appendChild(h);D[k].forEach(n=>{const d=document.createElement('div');d.style.cssText='padding:4px 6px 4px 20px;cursor:pointer;'+(sel===n?'background:#0a246a;color:#fff':'');d.textContent=(st[n]?'⛔ ':'🖥 ')+n;d.onclick=()=>draw(n);t.appendChild(d)})});
+if(sel){const i=b.querySelector('#in');i.innerHTML='<b>'+sel+'</b><p>Durum: '+(st[sel]?'Devre dışı.':'Bu aygıt düzgün çalışıyor.')+'</p><p>Üretici: FEAS Software<br>Sürücü: FazOS 1.0</p>';const x=document.createElement('button');x.className='btn';x.textContent=st[sel]?'Etkinleştir':'Devre Dışı Bırak';x.onclick=()=>draw(sel,'');i.appendChild(x);x.onclick=()=>{st[sel]=!st[sel];draw(sel)}}
+b.querySelector('#sc').onclick=()=>{draw(sel,'Taranıyor...');setTimeout(()=>{if(document.body.contains(w))draw(sel,'Yeni donanım bulunamadı.')},900)}};draw()},
+run:()=>{const w=win('run','Çalıştır');w.style.width='min(96vw,420px)';const b=w.querySelector('.bd');b.innerHTML='<p>Çalıştırmak istediğin programın, dosyanın veya internet adresinin adını yaz.</p><input id="ri" style="width:100%;padding:8px;border:2px inset #fff;background:#fff;color:#000;font:inherit" placeholder="notepad, cmd, calc, taskmgr, devmgmt.msc..." autocapitalize="off"><div class="fl" style="margin-top:10px"><button id="ro">Tamam</button><button id="rc">İptal</button></div><div id="rm" style="color:#a00"></div>';
+const M={notepad:'notes',notlar:'notes',cmd:'term',terminal:'term',calc:'calc',iexplore:'browser',browser:'browser',internet:'browser',camera:'cam',kamera:'cam',clock:'clock',saat:'clock',devmgmt:'dev','devmgmt.msc':'dev',taskmgr:'tm',explorer:'pc',mycomputer:'pc',pc:'pc',about:'about',winver:'about',mspaint:'paint',paint:'paint',winmine:'mines',mines:'mines',write:'writer',wordpad:'writer',control:'ctrl',cal:'cal',takvim:'cal',music:'music',run:'run'};
+const go=()=>{const v=b.querySelector('#ri').value.trim(),k=v.toLowerCase();const f=Object.keys(FILES).find(n=>n.toLowerCase()===k);const cl=()=>w.querySelector('.x').click();
+if(M[k]){cl();open(M[k])}else if(f){cl();if(wins.notes)wins.notes.querySelector('.x').click();window.pf=f;open('notes')}else if(/^https?:[/][/]/.test(v)||/^[^ ]+[.][a-z]{2,}$/i.test(v)){window.open(/^https?:/.test(v)?v:'https://'+v,'_blank','noopener');cl()}else if(k==='shutdown'){document.querySelector('#sd').click()}else if(k==='reboot'){location.reload()}else b.querySelector('#rm').textContent='"'+v+'" bulunamadı.'};
+b.querySelector('#ro').onclick=go;b.querySelector('#ri').onkeydown=e=>{if(e.key==='Enter')go()};b.querySelector('#rc').onclick=()=>w.querySelector('.x').click();setTimeout(()=>b.querySelector('#ri').focus(),50)},
+tm:()=>{const w=win('tm','Görev Yöneticisi');const b=w.querySelector('.bd');let I;const draw=()=>{if(!document.body.contains(w)){clearInterval(I);return}const c=20+Math.random()*30|0,r=40+Math.random()*10|0;b.innerHTML='<div class="fl"><b>İşlemci: %'+c+'</b><b>Bellek: %'+r+'</b><b>Pencere: '+Object.keys(wins).length+'</b></div><div id="tl"></div>';const l=b.querySelector('#tl');Object.keys(wins).forEach(id=>{const d=document.createElement('div');d.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:4px;border-bottom:1px solid #999';d.innerHTML='<span>'+wins[id].querySelector('.tb span').textContent+'</span>';const x=document.createElement('button');x.className='btn';x.textContent='Sonlandır';x.onclick=()=>{wins[id].querySelector('.x').click();draw()};d.appendChild(x);l.appendChild(d)})};I=setInterval(draw,2000);draw()},
+calc:()=>{const w=win('calc','Hesap Makinesi');w.style.width='min(96vw,320px)';const b=w.querySelector('.bd');b.innerHTML='<input id="cd" readonly style="width:100%;font:700 24px monospace;text-align:right;background:#fff;color:#000;border:2px inset #fff;padding:6px;margin-bottom:8px" value="0"><div id="cg" style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px"></div>';const d=b.querySelector('#cd'),g=b.querySelector('#cg');let s='';'C 7 8 9 / 4 5 6 * 1 2 3 - 0 . = +'.split(' ').forEach(k=>{const x=document.createElement('button');x.className='btn';x.textContent=k;x.style.padding='12px';x.onclick=()=>{if(k==='C')s='';else if(k==='='){try{s=String(Function('"use strict";return ('+s+')')())}catch(e){s=''}}else s+=k;d.value=s||'0'};g.appendChild(x)})},
+browser:()=>{const w=win('browser','FazNet - Internet');const b=w.querySelector('.bd');b.style.padding='0';
+b.innerHTML='<div class="fl" style="margin:6px"><button id="bh">⌂</button><button id="bb">↻</button><input id="bu" style="flex:1;min-width:120px;background:#000;color:#fff;border:1px solid #fff;padding:6px;font:inherit" placeholder="adres yaz veya ara"><button id="bg">Git</button><button id="bn">↗</button></div><div id="bv" style="height:min(54vh,440px);overflow:auto;margin:0 6px 6px;border:1px solid #555"></div><div style="font-size:12px;color:#999;padding:0 8px 8px">Sayfa açılmazsa site gömülmeyi engelliyor olabilir: ↗ ile yeni sekmede aç.</div>';
+const v=b.querySelector('#bv'),u=b.querySelector('#bu');let cur='';
+const go=q=>{q=q.trim();if(!q||q==='faznet://ana')return home();if(/^faznet:/.test(q))return home();
+let url=/^https?:\/\//.test(q)?q:(/^[^\s]+\.[a-z]{2,}(\/.*)?$/i.test(q)?'https://'+q:'https://tr.wikipedia.org/w/index.php?search='+encodeURIComponent(q));
+cur=url;u.value=url;v.innerHTML='<iframe src="'+url.replace(/"/g,'')+'" style="width:100%;height:100%;border:0;background:#fff" referrerpolicy="no-referrer"></iframe>'};
+const home=()=>{cur='';u.value='faznet://ana';v.innerHTML='<div style="padding:14px"><div style="font:700 30px system-ui">FazNet</div><p>Freddy Fazbear\'s ağına hoş geldin. Bir bağlantı seç ya da adres/arama yaz (arama: Wikipedia).</p><div class="fl" id="ql"></div></div>';
+[['Wikipedia','https://tr.wikipedia.org'],['FNaF Wiki','https://freddy-fazbears-pizza.fandom.com'],['Wikipedia: FNaF','https://tr.wikipedia.org/wiki/Five_Nights_at_Freddy%27s'],['OpenStreetMap','https://www.openstreetmap.org']].forEach(([n,l])=>{const x=document.createElement('button');x.textContent=n;x.onclick=()=>go(l);v.querySelector('#ql').appendChild(x)})};
+b.querySelector('#bg').onclick=()=>go(u.value);u.onkeydown=e=>{if(e.key==='Enter')go(u.value)};b.querySelector('#bh').onclick=home;b.querySelector('#bb').onclick=()=>cur&&go(cur);b.querySelector('#bn').onclick=()=>{const t=cur||'';if(t)window.open(t,'_blank','noopener')};home()},
+notes:()=>{const w=win('notes','NOTLAR.exe');const b=w.querySelector('.bd');const fl=document.createElement('div');fl.className='fl';const pre=document.createElement('pre');
+Object.keys(FILES).forEach((f,i)=>{const bt=document.createElement('button');bt.textContent=f;bt.onclick=()=>{pre.textContent=FILES[f];fl.querySelectorAll('button').forEach(x=>x.classList.remove('on'));bt.classList.add('on')};fl.appendChild(bt);if(f===(window.pf||'BITE_OF_87.txt'))setTimeout(()=>bt.click(),0)});
+b.append(fl,pre)},
+term:()=>{const w=win('term','TERMINAL');w.querySelector('.bd').innerHTML='<div id="term-out">FazOS Terminal v1.0\n"help" yaz.\n</div><input id="term-in" placeholder="komut..." autocomplete="off" autocapitalize="off">';
+const o=w.querySelector('#term-out'),i=w.querySelector('#term-in');const p=t=>{o.textContent+=t+'\n';o.scrollTop=1e9};
+i.onkeydown=e=>{if(e.key!=='Enter')return;const c=i.value.trim();i.value='';p('> '+c);const[m,...r]=c.split(/\s+/);const a=r.join(' ');
+if(m==='help')p('help ls cat <dosya> bite87 whoami date version clear reboot');
+else if(m==='dir')p(' C: sürücüsünün dizini\n\n'+Object.keys(FS['C:']).map(k=>(FS['C:'][k].f?'      ':'<DIR> ')+k).join('\n'));
+else if(m==='ls')p(Object.keys(FILES).join('\n'));
+else if(m==='cat'){const f=Object.keys(FILES).find(k=>k.toLowerCase()===a.toLowerCase());p(f?FILES[f]:'Dosya yok.')}
+else if(m==='bite87')p(FILES['BITE_OF_87.txt']);
+else if(m==='whoami')p('gece_gorevlisi');
+else if(m==='date')p(new Date().toString());
+else if(m==='version')p('FazOS 1.0 - FEAS Software (c) 1980-2027');
+else if(m==='clear')o.textContent='';
+else if(m==='reboot')location.reload();
+else if(m)p('Bilinmeyen komut: '+m)};setTimeout(()=>i.focus(),50)},
+cam:()=>{const w=win('cam','KAMERA 01');w.querySelector('.bd').innerHTML='<div class="cam"><canvas width="320" height="240"></canvas><em><span class="rec">● REC</span> CAM <span id="cn">01</span></em></div><div class="fl" style="margin:8px 0 0"><button>01</button><button>02</button><button>03</button><button>04</button></div>';
+const c=w.querySelector('canvas'),x=c.getContext('2d');let cam=1;w.querySelectorAll('.fl button').forEach((b,i)=>b.onclick=()=>{cam=i+1;w.querySelector('#cn').textContent='0'+cam});
+const L=setInterval(()=>{if(!document.body.contains(w)){clearInterval(L);return}const im=x.createImageData(320,240);for(let k=0;k<im.data.length;k+=4){const v=Math.random()*60|0;im.data[k]=im.data[k+1]=im.data[k+2]=v;im.data[k+3]=255}x.putImageData(im,0,0);x.fillStyle='#ccc';x.fillRect(40+cam*30,100,8,60);x.fillRect(100,170,120,4)},90)},
+clock:()=>{const w=win('clock','SAAT');const b=w.querySelector('.bd');b.innerHTML='<div style="font-size:42px;text-align:center" id="big"></div><div style="text-align:center">Vardiya: 00:00 → 06:00</div>';const t=()=>{const e=w.querySelector('#big');if(e)e.textContent=new Date().toLocaleTimeString('tr-TR')};t();const I=setInterval(()=>{document.body.contains(w)?t():clearInterval(I)},1000)},
+about:()=>{const w=win('about','HAKKINDA');w.querySelector('.bd').innerHTML='<pre>FazOS 1.0\nFEAS Software ©\n1980-2027\n\nHayran yapimi simulasyon.\nResmi bir urun degildir.</pre>'}
+};
+function win(id,t){const w=document.createElement('div');w.className='win';w.style.left=(20+Object.keys(wins).length*22)+'px';w.style.top=(30+Object.keys(wins).length*22)+'px';w.style.zIndex=++z;
+w.innerHTML=`<div class="tb"><span>${t}</span><span><span class="m">□</span><span class="x">X</span></span></div><div class="bd"></div>`;area.appendChild(w);wins[id]=w;
+const tt=document.createElement('div');tt.className='tt';tt.textContent=t;tt.onclick=()=>{w.style.zIndex=++z};tasks.appendChild(tt);
+w.querySelector('.x').onclick=()=>{w.remove();tt.remove();delete wins[id]};
+w.onpointerdown=()=>w.style.zIndex=++z;w.querySelector('.m').onclick=()=>w.classList.toggle('max');h0=0;
+const h=w.querySelector('.tb');h.onpointerdown=e=>{if(e.target.className==='x'||e.target.className==='m')return;const ox=e.clientX-w.offsetLeft,oy=e.clientY-w.offsetTop;h.setPointerCapture(e.pointerId);h.onpointermove=m=>{w.style.left=Math.max(0,m.clientX-ox)+'px';w.style.top=Math.max(0,m.clientY-oy)+'px'};h.onpointerup=()=>h.onpointermove=null};
+return w}
+function open(id){if(wins[id]){wins[id].style.zIndex=++z;return}APPS[id]()}
+const sm=$('#sm');sm.innerHTML='<div class="smh">FazOS <small>gece_gorevlisi</small></div><input id="sq" placeholder="Uygulama veya dosya ara..."><div id="sl"></div><div class="smf"><button class="btn" id="rb">Yeniden Başlat</button><button class="btn" id="sd">Kapat</button></div>';
+const items=[['browser','FazNet - Internet'],['writer','Yazı Defteri'],['paint','Paint'],['mines','Mayın Tarlası'],['music','Müzik Kutusu'],['cal','Takvim'],['ctrl','Denetim Masası'],['pc','Bu Bilgisayar'],['dev','Aygıt Yöneticisi'],['tm','Görev Yöneticisi'],['run','Çalıştır...'],['calc','Hesap Makinesi'],['notes','Notlar'],['term','Terminal'],['cam','Kamera'],['clock','Saat'],['about','Hakkında']];
+function fill(q){q=q.toLowerCase();const l=$('#sl');l.innerHTML='';const add=(t,s,fn)=>{const d=document.createElement('div');d.className='smi';d.innerHTML=t+'<small>'+s+'</small>';d.onclick=()=>{fn();sm.style.display='none'};l.appendChild(d)};
+items.filter(i=>i[1].toLowerCase().includes(q)).forEach(i=>add((IC[i[0]]||'')+' '+i[1],'uygulama',()=>open(i[0])));
+Object.keys(FILES).filter(f=>q&&f.toLowerCase().includes(q)).forEach(f=>add(f,'dosya',()=>{if(wins.notes)wins.notes.querySelector('.x').click();window.pf=f;open('notes')}))}
+$('#sq').oninput=e=>fill(e.target.value);
+$('#start').onclick=e=>{e.stopPropagation();const o=sm.style.display==='flex';sm.style.display=o?'none':'flex';if(!o){$('#sq').value='';fill('')}};
+document.addEventListener('click',e=>{if(!sm.contains(e.target))sm.style.display='none'});
+$('#rb').onclick=()=>location.reload();
+const cm=$('#cm'),WP=['#3a6ea5','#008080','#2b2b2b','#5a3a7a','#2f6f3a'];let wi=0;
+const showCm=(x,y)=>{cm.innerHTML='';[['Yenile',()=>{area.style.opacity=.3;setTimeout(()=>area.style.opacity=1,150)}],['Arka Planı Değiştir',()=>{wi=(wi+1)%WP.length;area.style.background=WP[wi]}],['Çalıştır...',()=>open('run')],['Görev Yöneticisi',()=>open('tm')],['Bu Bilgisayar',()=>open('pc')],['Aygıt Yöneticisi',()=>open('dev')],['Özellikler',()=>open('about')]].forEach(([t,f])=>{const d=document.createElement('div');d.textContent=t;d.onclick=()=>{cm.style.display='none';f()};cm.appendChild(d)});cm.style.display='block';cm.style.left=Math.max(0,Math.min(x,innerWidth-200))+'px';cm.style.top=Math.max(0,Math.min(y,innerHeight-300))+'px'};
+area.oncontextmenu=e=>{if(e.target!==area&&!e.target.closest('.ic'))return;e.preventDefault();showCm(e.clientX,e.clientY)};
+let lp;area.addEventListener('touchstart',e=>{if(e.target!==area)return;const t=e.touches[0];lp=setTimeout(()=>showCm(t.clientX,t.clientY),600)});['touchend','touchmove'].forEach(v=>area.addEventListener(v,()=>clearTimeout(lp)));
+document.addEventListener('click',()=>cm.style.display='none');
+$('#sd').onclick=()=>{document.body.innerHTML='<div style="height:100%;display:flex;align-items:center;justify-content:center;text-align:center;cursor:pointer" onclick="location.reload()">Sistem kapatıldı.<br>Açmak için dokun.</div>'};
+setInterval(()=>$('#clk').textContent=new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'}),1000);
+</script></body></html>
